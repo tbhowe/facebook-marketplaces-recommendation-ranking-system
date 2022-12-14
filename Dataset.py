@@ -1,12 +1,17 @@
+#%%
 from PIL import Image
 from torch.utils.data import Dataset
+from torch.utils.data import DataLoader
 import pandas as pd
 import numpy as np
 import os
 
+#TODO docstrings for methods and for the class
+#TODO data loader
+#TODO transform images
 
 
-class TestDataset(Dataset):
+class ImagesDataset(Dataset):
 
     def __init__(self):
         super().__init__()
@@ -27,11 +32,11 @@ class TestDataset(Dataset):
        return self.get_X_y_from_img_idx(idx)
 
     def __repr__(self):
-        return "hello"  # str(self.cities)
+        return "hello"  
     
     def __len__(self):
         return len(self.all_images)
-        # return len(self.all_imgs)
+        
     def load_dataframe(self):
         product_df = pd.read_csv('products.csv',lineterminator='\n', index_col=0)
         product_df['price'] = product_df['price'].replace('[\£,]', '', regex=True).astype(float)
@@ -50,5 +55,9 @@ class TestDataset(Dataset):
         category_idx = self.category_name_to_idx[self.image_df.iloc[idx]['cat_L1']]
         return img, category_idx
 
-my_dataset=TestDataset()
-my_dataset[10]
+FacebookImagesDataset=ImagesDataset()
+print(FacebookImagesDataset[10])
+
+train_loader=DataLoader(FacebookImagesDataset, batch_size=32, shuffle=True)
+print('all done')
+# %%
