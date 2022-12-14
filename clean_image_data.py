@@ -2,6 +2,7 @@
 from PIL import Image
 import os
 
+#TODO -  make the image filename include "resized"
 def resize_image(final_size, im):
     size = im.size
     ratio = float(final_size) / max(size)
@@ -21,7 +22,8 @@ if __name__ == '__main__':
             os.makedirs("cleaned_images/")
 
     for n, item in enumerate(dirs, 1):
+        filename=str(item)
         im = Image.open('images/' + item)
         new_im = resize_image(final_size, im)
-        new_im.save('cleaned_images/'f'{n}_resized.jpg')
+        new_im.save('cleaned_images/' + item)
 # %%
