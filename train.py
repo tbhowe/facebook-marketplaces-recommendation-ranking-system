@@ -34,7 +34,7 @@ def train(
     writer = SummaryWriter()
 
     # initialise an optimiser
-    optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
+    optimiser = optimiser(model.parameters(), lr=lr)
 
     global_idx = 0
     for epoch in range(epochs):  
@@ -55,7 +55,7 @@ def train(
             writer.add_scalar("Loss/Train", loss.item(), global_idx)
             global_idx += 1
 
-            if global_idx % 50 == 0:
+            if global_idx % 20 == 0:
                 print('Evaluating on valiudation set')
                 val_loss, val_acc = evaluate(model, val_loader)
                 writer.add_scalar("Loss/Val", val_loss, global_idx)
@@ -101,7 +101,7 @@ split_lengths = [train_set_len, val_set_len, test_set_len]
 train_set, val_set, test_set = random_split(FacebookImagesDataset, split_lengths)
 
 # Initialise data loaders and model
-batch_size=32
+batch_size=64
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
@@ -114,8 +114,8 @@ train(
     val_loader,
     test_loader,
     epochs=1000,
-    lr=0.0001,
-    optimiser=torch.optim.AdamW
+    lr=0.001,
+    optimiser=torch.optim.SGD
     )
 
 # %%

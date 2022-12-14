@@ -29,25 +29,23 @@ class CNN(torch.nn.Module):
         super().__init__()
         # initialise weights and biases (parameters)
         self.layers = torch.nn.Sequential(
-            torch.nn.Conv2d(in_channels=3, out_channels=8, kernel_size=7),
+            torch.nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(8, 16, 7),
+            torch.nn.Conv2d(16, 16, 3),
             torch.nn.ReLU(),
-            torch.nn.Conv2d(16, 16, 7),
+            torch.nn.Conv2d(16, 16, 3),
             torch.nn.ReLU(),
+            torch.nn.Conv2d(16, 16, 3),
+            # torch.nn.ReLU(),
             torch.nn.Flatten(),
-            torch.nn.Linear(193600, 800),
+            torch.nn.Linear(230400, 2000),
             torch.nn.ReLU(),
-            torch.nn.Linear(800, 400),
+            torch.nn.Linear(2000, 256),
             torch.nn.ReLU(),
-            torch.nn.Linear(400, 256),
-            torch.nn.ReLU(),
-            torch.nn.Linear(256, 100),
-            torch.nn.ReLU(),
-            torch.nn.Linear(100, 64),
+            torch.nn.Linear(256, 64),
             torch.nn.ReLU(),
             torch.nn.Linear(64, 13),
-            # torch.nn.Softmax()
+            torch.nn.Softmax()
         )
 
     def forward(self, features):

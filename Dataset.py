@@ -25,8 +25,9 @@ class ImagesDataset(Dataset):
         self.all_images=self.image_df['id_x']
         self.transform=transforms.Compose([
             transforms.Resize(128),
+            # transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1)),
             transforms.ToTensor(),
-            transforms.RandomHorizontalFlip(p=0.3)
+            # transforms.RandomHorizontalFlip(p=0.3)
             ])
 
         # create dict of cat_name to IDX
@@ -70,10 +71,8 @@ class ImagesDataset(Dataset):
     
 # test_dataset=ImagesDataset()
 # print(test_dataset.image_df.iloc[9533]['cat_L1'])
-# # print(test_dataset.category_name_to_idx)
-# test_dataset.category_name_to_idx[test_dataset.image_df.iloc[9533]['cat_L1']]
-# # test_features,test_label=test_dataset[234]
-# # print('label is:')
-# # print(test_label)
+# print(test_dataset.category_name_to_idx)
+# features,labels=test_dataset[1113]
+# features.shape
 
 # %%
