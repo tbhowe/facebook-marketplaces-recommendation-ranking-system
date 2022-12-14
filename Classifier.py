@@ -16,9 +16,9 @@ FacebookImagesDataset=ImagesDataset()
 batch_size=32
 train_loader=DataLoader(FacebookImagesDataset, batch_size=batch_size, shuffle=True)
 
-example=next(iter(train_loader))
-print(example)
-features,labels = example
+# example=next(iter(train_loader))
+
+# features,labels = example
 
 # print('oll yn kompoester yw. Splann!')
 
@@ -29,14 +29,14 @@ class CNN(torch.nn.Module):
         super().__init__()
         # initialise weights and biases (parameters)
         self.layers = torch.nn.Sequential(
-            torch.nn.Conv2d(1, 8, 7),
+            torch.nn.Conv2d(in_channels=3, out_channels=8, kernel_size=7),
             torch.nn.ReLU(),
             torch.nn.Conv2d(8, 16, 7),
             torch.nn.ReLU(),
             torch.nn.Conv2d(16, 16, 7),
             torch.nn.ReLU(),
             torch.nn.Flatten(),
-            torch.nn.Linear(1600, 800),
+            torch.nn.Linear(193600, 800),
             torch.nn.ReLU(),
             torch.nn.Linear(800, 400),
             torch.nn.ReLU(),
@@ -46,7 +46,7 @@ class CNN(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.Linear(100, 64),
             torch.nn.ReLU(),
-            torch.nn.Linear(64, 10),
+            torch.nn.Linear(64, 13),
             # torch.nn.Softmax()
         )
 
@@ -55,3 +55,4 @@ class CNN(torch.nn.Module):
         return self.layers(features)
 
     
+# %%

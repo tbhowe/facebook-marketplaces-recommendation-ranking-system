@@ -24,7 +24,8 @@ class ImagesDataset(Dataset):
         self.categories=self.image_df['cat_L1'].unique()
         self.all_images=self.image_df['id_x']
         self.transform=transforms.Compose([
-            transforms.PILToTensor(),
+            transforms.Resize(128),
+            transforms.ToTensor(),
             transforms.RandomHorizontalFlip(p=0.3)
             ])
 
@@ -67,10 +68,12 @@ class ImagesDataset(Dataset):
         return img, category_idx
 
     
+# test_dataset=ImagesDataset()
+# print(test_dataset.image_df.iloc[9533]['cat_L1'])
+# # print(test_dataset.category_name_to_idx)
+# test_dataset.category_name_to_idx[test_dataset.image_df.iloc[9533]['cat_L1']]
+# # test_features,test_label=test_dataset[234]
+# # print('label is:')
+# # print(test_label)
 
-FacebookImagesDataset=ImagesDataset()
-print(FacebookImagesDataset[10])
-
-train_loader=DataLoader(FacebookImagesDataset, batch_size=32, shuffle=True)
-print('all done')
 # %%
