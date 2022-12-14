@@ -2,6 +2,9 @@
 from PIL import Image
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
+from torch.nn import Sequential
+from torchvision import transforms
+
 import pandas as pd
 import numpy as np
 import os
@@ -9,6 +12,8 @@ import os
 #TODO docstrings for methods and for the class
 #TODO data loader
 #TODO transform images
+#TODO write im_show method
+#TODO move encoder and decoder to functions
 
 
 class ImagesDataset(Dataset):
@@ -18,11 +23,17 @@ class ImagesDataset(Dataset):
         self.load_dataframe()
         self.categories=self.image_df['cat_L1'].unique()
         self.all_images=self.image_df['id_x']
+        self.transform=transforms.Compose([
+            transforms.PILToTensor(),
+            transforms.RandomHorizontalFlip(p=0.3)
+            ])
+
         # create dict of cat_name to IDX
         self.category_name_to_idx = {
             category: cat_idx for cat_idx, category in enumerate(self.categories)
         }
-        # create dict of IDX to cat name
+        
+        # create dict of IDX to cat_name
         self.idx_to_category_name= {
             value: key for
             key, value in self.category_name_to_idx.items()
@@ -50,10 +61,12 @@ class ImagesDataset(Dataset):
         image_fp = ( cwd + '/cleaned_images/' + image_ID + '.jpg')
         # print(img_fp)
         img = Image.open(image_fp)
-        # if self.transform:
-        #     img = self.transform(img)
+        if self.transform:
+            img = self.transform(img)
         category_idx = self.category_name_to_idx[self.image_df.iloc[idx]['cat_L1']]
         return img, category_idx
+
+    
 
 FacebookImagesDataset=ImagesDataset()
 print(FacebookImagesDataset[10])
