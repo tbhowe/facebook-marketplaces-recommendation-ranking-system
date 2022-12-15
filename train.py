@@ -120,7 +120,7 @@ train(
     val_loader,
     test_loader,
     epochs=1000,
-    lr=0.001,
+    lr=0.1,
     optimiser=torch.optim.SGD
     )
 
