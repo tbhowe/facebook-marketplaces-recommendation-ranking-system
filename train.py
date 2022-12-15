@@ -1,5 +1,5 @@
 #%%
-from Classifier import CNN
+from Classifier import CNN, VanillaNetwork
 from Dataset import ImagesDataset
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
@@ -38,13 +38,14 @@ def train(
 
     global_idx = 0
 
-    # line below ovetrains on one example
+    # line below ovetrains on one example - DELETE after diagnostic
     features,labels=next(iter(train_loader))
 
     for epoch in range(epochs):  
 
         for batch in train_loader:  
-            # features, labels = batch -commenting out to pass one example for overtrain
+            # COMMENT the line below, to force overtrain on single example:
+            # features, labels = batch 
 
             # make prediction
             prediction = model(features)  
@@ -60,7 +61,7 @@ def train(
             writer.add_scalar("Loss/Train", loss.item(), global_idx)
             global_idx += 1
 
-            if global_idx % 20 == 0:
+            if global_idx % 50 == 0:
                 print('Evaluating on valiudation set')
                 val_loss, val_acc = evaluate(model, val_loader)
                 writer.add_scalar("Loss/Val", val_loss, global_idx)
@@ -110,8 +111,8 @@ batch_size=16
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
-model = CNN()
-
+# model = CNN()
+model = VanillaNetwork()
 
 # Train the model
 train(
@@ -120,7 +121,7 @@ train(
     val_loader,
     test_loader,
     epochs=1000,
-    lr=0.1,
+    lr=0.001,
     optimiser=torch.optim.SGD
     )
 

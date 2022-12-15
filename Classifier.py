@@ -12,15 +12,27 @@ import os
 
 #%% initialise Dataset and data loader
 
-FacebookImagesDataset=ImagesDataset()
-batch_size=32
-train_loader=DataLoader(FacebookImagesDataset, batch_size=batch_size, shuffle=True)
-
-# example=next(iter(train_loader))
-
-# features,labels = example
-
 # print('oll yn kompoester yw. Splann!')
+
+class VanillaNetwork(torch.nn.Module):
+    '''Minimal spec network for diagnostic purposes'''
+    def __init__(self) -> None:
+        super().__init__()
+
+        # initialise weights and biases (parameters)
+        self.layers = torch.nn.Sequential(
+            torch.nn.Flatten(),
+            torch.nn.Linear(49152, 4096),
+            torch.nn.ReLU(),
+            torch.nn.Linear(4096, 512),
+            torch.nn.ReLU(),
+            torch.nn.Linear(512, 13),
+            # torch.nn.Softmax()
+        )
+
+    def forward(self, features):
+        """Takes in features and makes a prediction"""
+        return self.layers(features)
 
 
 class CNN(torch.nn.Module):
