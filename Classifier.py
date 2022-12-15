@@ -45,7 +45,7 @@ class CNN(torch.nn.Module):
             torch.nn.Linear(256, 64),
             torch.nn.ReLU(),
             torch.nn.Linear(64, 13),
-            torch.nn.Softmax()
+            # torch.nn.Softmax()
         )
 
     def forward(self, features):

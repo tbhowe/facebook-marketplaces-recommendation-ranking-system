@@ -9,7 +9,7 @@ import numpy as np
 from torch.utils.data import random_split
 
 
-
+# def overtrain_on_one_batch()
 
 def train(
     model,
@@ -37,9 +37,14 @@ def train(
     optimiser = optimiser(model.parameters(), lr=lr)
 
     global_idx = 0
+
+    # line below ovetrains on one example
+    features,labels=next(iter(train_loader))
+
     for epoch in range(epochs):  
+
         for batch in train_loader:  
-            features, labels = batch
+            # features, labels = batch -commenting out to pass one example for overtrain
 
             # make prediction
             prediction = model(features)  
@@ -101,11 +106,12 @@ split_lengths = [train_set_len, val_set_len, test_set_len]
 train_set, val_set, test_set = random_split(FacebookImagesDataset, split_lengths)
 
 # Initialise data loaders and model
-batch_size=64
+batch_size=16
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
 model = CNN()
+
 
 # Train the model
 train(

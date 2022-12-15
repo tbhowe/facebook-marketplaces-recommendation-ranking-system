@@ -25,8 +25,8 @@ class ImagesDataset(Dataset):
         self.all_images=self.image_df['id_x']
         self.transform=transforms.Compose([
             transforms.Resize(128),
-            # transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1)),
             transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1))
             # transforms.RandomHorizontalFlip(p=0.3)
             ])
 
