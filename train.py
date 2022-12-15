@@ -39,13 +39,13 @@ def train(
     global_idx = 0
 
     # line below ovetrains on one example - DELETE after diagnostic
-    features,labels=next(iter(train_loader))
+    # features,labels=next(iter(train_loader))
 
     for epoch in range(epochs):  
 
         for batch in train_loader:  
             # COMMENT the line below, to force overtrain on single example:
-            # features, labels = batch 
+            features, labels = batch 
 
             # make prediction
             prediction = model(features)  
@@ -111,8 +111,8 @@ batch_size=16
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
-# model = CNN()
-model = VanillaNetwork()
+model = CNN()
+# model = VanillaNetwork()
 
 # Train the model
 train(

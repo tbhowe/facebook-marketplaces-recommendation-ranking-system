@@ -26,7 +26,8 @@ class ImagesDataset(Dataset):
         self.transform=transforms.Compose([
             transforms.Resize(128),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1))
+            transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1)),
+            transforms.RandomCrop((64, 64),pad_if_needed=True)
             # transforms.RandomHorizontalFlip(p=0.3)
             ])
 
@@ -42,7 +43,7 @@ class ImagesDataset(Dataset):
         }
 
     def __getitem__(self, idx):
-       return self.get_X_y_from_img_idx(idx)
+       return self.get_example_from_img_idx(idx)
 
     def __repr__(self):
         return "hello"  
@@ -51,13 +52,15 @@ class ImagesDataset(Dataset):
         return len(self.all_images)
         
     def load_dataframe(self):
+        '''loads the images dataframe into the class'''
         product_df = pd.read_csv('products.csv',lineterminator='\n', index_col=0)
         product_df['price'] = product_df['price'].replace('[\£,]', '', regex=True).astype(float)
         image_df=pd.read_csv('images.csv',lineterminator='\n', index_col=0)
         self.image_df=image_df.merge(product_df, left_on ='product_id', right_on='id')
         self.image_df['cat_L1'] = [catter.split("/")[0] for catter in self.image_df['category']]
     
-    def get_X_y_from_img_idx(self, idx):
+    def get_example_from_img_idx(self, idx):
+        '''Given an index in the dataframe, return an example features and labels'''
         cwd = os.getcwd()
         image_ID=self.image_df.iloc[idx]['id_x']
         image_fp = ( cwd + '/cleaned_images/' + image_ID + '.jpg')
