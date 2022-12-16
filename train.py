@@ -1,5 +1,5 @@
 #%%
-from Classifier import CNN
+from Classifier import CNN, ResNet50
 from Dataset import ImagesDataset
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
@@ -9,14 +9,14 @@ import numpy as np
 from torch.utils.data import random_split
 
 
-
+device = torch.device('cpu')
 
 def train(
     model,
     train_loader,
     val_loader,
     test_loader,
-    lr=0.1,
+    lr=0.0003,
     epochs=100,
     optimiser=torch.optim.SGD
     ):
@@ -34,8 +34,7 @@ def train(
     writer = SummaryWriter()
 
     # initialise an optimiser
-    optimiser = optimiser(model.parameters(), lr=lr)
-
+    optimiser = optimiser(model.parameters(), lr=lr, )  #weight_decay=0.001
     global_idx = 0
     for epoch in range(epochs):  
         for batch in train_loader:  
@@ -91,7 +90,7 @@ def evaluate(model, dataloader):
 # Initialise dataset
 FacebookImagesDataset=ImagesDataset()
 
-device = torch.device("cpu")
+# device = torch.device("cpu")
 
 # Create train-test split
 train_set_len = round(0.7*len(FacebookImagesDataset))
@@ -105,7 +104,7 @@ batch_size=64
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
-model = CNN()
+model = ResNet50()
 
 # Train the model
 train(
@@ -114,7 +113,7 @@ train(
     val_loader,
     test_loader,
     epochs=1000,
-    lr=0.001,
+    lr=0.0003,
     optimiser=torch.optim.SGD
     )
 
