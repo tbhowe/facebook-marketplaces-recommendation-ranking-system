@@ -7,10 +7,10 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from torch.utils.data import random_split
-from torchvision.datasets import MNIST
 from torchvision import transforms
 
-
+#TODO - save model score at end of each epoch
+#TODO - with optional flag: load most recent state dict on init
 def train(
     model,
     train_loader,
@@ -36,7 +36,11 @@ def train(
     # initialise an optimiser
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
     batch_idx = 0
+    epoch_idx= 0
     for epoch in range(epochs):  # for each epoch
+        weights_filename=model.weights_folder_name + 'epoch_' + str(epoch_idx) +'_weights.pt'
+        epoch_idx +=1
+        torch.save(model.state_dict(), weights_filename)
         for batch in train_loader:  # for each batch in the dataloader
             features, labels = batch
             prediction = model(features)  # make a prediction
@@ -50,7 +54,7 @@ def train(
             writer.add_scalar("Loss/Train", loss.item(), batch_idx)
             batch_idx += 1
             if batch_idx % 100 == 0:
-                print('Evaluating on valiudation set')
+                print('Evaluating on validation set')
                 # evaluate the validation set performance
                 val_loss, val_acc = evaluate(model, val_loader)
                 writer.add_scalar("Loss/Val", val_loss, batch_idx)
@@ -60,6 +64,8 @@ def train(
     test_loss = evaluate(model, test_loader)
     # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
+    
+    
     return model   # return trained model
 
 
@@ -95,7 +101,6 @@ if __name__ == "__main__":
     ])
 
     dataset = ImagesDataset(transform=transform)
-    dataset.get_value_frequencies()
     train_set_len = round(0.7*len(dataset))
     val_set_len = round(0.15*len(dataset))
     test_set_len = len(dataset) - val_set_len - train_set_len
