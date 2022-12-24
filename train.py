@@ -7,9 +7,10 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from torch.utils.data import random_split
+import torchvision.transforms as T
+from PIL import Image
 
-
-device = torch.device('cpu')
+device = torch.device('mps')
 
 def train(
     model,
@@ -34,7 +35,7 @@ def train(
     writer = SummaryWriter()
 
     # initialise an optimiser
-    optimiser = optimiser(model.parameters(), lr=lr, )  #weight_decay=0.001
+    optimiser = optimiser(model.parameters(), lr=lr , weight_decay=5e-4)  #weight_decay=0.001
     global_idx = 0
     for epoch in range(epochs):  
         for batch in train_loader:  
@@ -54,7 +55,7 @@ def train(
             writer.add_scalar("Loss/Train", loss.item(), global_idx)
             global_idx += 1
 
-            if global_idx % 20 == 0:
+            if global_idx % 25 == 0:
                 print('Evaluating on valiudation set')
                 val_loss, val_acc = evaluate(model, val_loader)
                 writer.add_scalar("Loss/Val", val_loss, global_idx)
@@ -100,11 +101,17 @@ split_lengths = [train_set_len, val_set_len, test_set_len]
 train_set, val_set, test_set = random_split(FacebookImagesDataset, split_lengths)
 
 # Initialise data loaders and model
-batch_size=64
+batch_size=32
 train_loader=DataLoader(train_set, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_set, batch_size=batch_size)
 test_loader = DataLoader(test_set, batch_size=batch_size)
 model = ResNet50()
+
+# img, labelx = train_set[400]
+# transform_to_pil=T.ToPILImage()
+# img=transform_to_pil(img)
+# img.show()
+# print(FacebookImagesDataset.idx_to_category_name[labelx])
 
 # Train the model
 train(
@@ -112,8 +119,8 @@ train(
     train_loader,
     val_loader,
     test_loader,
-    epochs=1000,
-    lr=0.0003,
+    epochs=500,
+    lr=0.003,
     optimiser=torch.optim.SGD
     )
 

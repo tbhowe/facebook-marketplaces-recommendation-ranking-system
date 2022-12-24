@@ -1,12 +1,9 @@
 #%%
 from PIL import Image
 from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
-from torch.nn import Sequential
 from torchvision import transforms
 
 import pandas as pd
-import numpy as np
 import os
 
 #TODO docstrings for methods and for the class
@@ -24,12 +21,12 @@ class ImagesDataset(Dataset):
         self.categories=self.image_df['cat_L1'].unique()
         self.all_images=self.image_df['id_x']
         self.transform=transforms.Compose([
-            # transforms.Resize(512),
-            
+           transforms.Resize(128),
+            transforms.CenterCrop(128),
+            transforms.RandomHorizontalFlip(p=0.3),
             transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1)),
-            transforms.RandomCrop((128, 128 ),pad_if_needed=True)
-            # transforms.RandomHorizontalFlip(p=0.3)
+            # transforms.Normalize(mean=[0.485, 0.456, 0.406],
+            #                      std=[0.229, 0.224, 0.225]) 
             ])
 
         # create dict of cat_name to IDX

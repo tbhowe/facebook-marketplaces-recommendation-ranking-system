@@ -1,16 +1,10 @@
 #%%
 
-from Dataset import ImagesDataset
-from PIL import Image
-from torch.utils.data import DataLoader
-from torchvision import transforms
+
 from torchvision.models import resnet50
 
 import torch
 
-import pandas as pd
-import numpy as np
-import os
 
 #%% initialise Dataset and data loader
 
@@ -32,11 +26,12 @@ class ResNet50(torch.nn.Module):
             param.grad_required = False
             # param.lr = 0.00006
         linear_layers = torch.nn.Sequential(
-            torch.nn.Linear(2048, 512),
-            torch.nn.ReLU(),
-            torch.nn.Linear(512, 64),
-            torch.nn.ReLU(),
-            torch.nn.Linear(64, 13),
+            torch.nn.Linear(2048,13)
+            # torch.nn.Linear(2048, 512),
+            # torch.nn.ReLU(),
+            # torch.nn.Linear(512, 64),
+            # torch.nn.ReLU(),
+            # torch.nn.Linear(64, 13),
         )
         self.layers.fc = linear_layers
         # print(self.layers)
@@ -68,7 +63,7 @@ class CNN(torch.nn.Module):
             torch.nn.Linear(256, 64),
             torch.nn.ReLU(),
             torch.nn.Linear(64, 13),
-            torch.nn.Softmax()
+            
         )
 
     def forward(self, features):
