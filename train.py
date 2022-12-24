@@ -1,4 +1,4 @@
-from dataset import CitiesDataset
+from Dataset import ImagesDataset
 from classifier import NeuralNetworkClassifier, CNN, TransferLearning
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
