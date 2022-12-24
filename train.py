@@ -1,5 +1,6 @@
+#%%
 from Dataset import ImagesDataset
-from Classifier import NeuralNetworkClassifier, CNN, TransferLearning
+from Classifier import TransferLearning
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import torch
@@ -30,12 +31,6 @@ def train(
     - model: a trained pytorch model
     """
 
-    # components of a ml algortithms
-    # 1. data
-    # 2. model
-    # 3. criterion (loss function)
-    # 4. optimiser
-
     writer = SummaryWriter()
 
     # initialise an optimiser
@@ -54,7 +49,7 @@ def train(
             optimiser.zero_grad()  # zero grad
             writer.add_scalar("Loss/Train", loss.item(), batch_idx)
             batch_idx += 1
-            if batch_idx % 50 == 0:
+            if batch_idx % 100 == 0:
                 print('Evaluating on valiudation set')
                 # evaluate the validation set performance
                 val_loss, val_acc = evaluate(model, val_loader)
@@ -91,7 +86,8 @@ if __name__ == "__main__":
     transform = transforms.Compose([
         
         transforms.Resize(size),
-        transforms.RandomCrop((size, size)),
+        transforms.RandomCrop((64, 64)),
+        # transforms.RandomEqualize(p=0.3),
         transforms.ToTensor(),
         # transforms.Grayscale(),
         
@@ -99,10 +95,7 @@ if __name__ == "__main__":
     ])
 
     dataset = ImagesDataset(transform=transform)
-    # dataset = MNIST(root='./mnist-data', download=True, transform=transform) # TESTING
-    # features, labels = dataset[0]
-    # features.show()
-    # print(labels)
+    dataset.get_value_frequencies()
     train_set_len = round(0.7*len(dataset))
     val_set_len = round(0.15*len(dataset))
     test_set_len = len(dataset) - val_set_len - train_set_len
@@ -122,8 +115,10 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=1000,
+        epochs=100,
         lr=0.0001,
         optimiser=torch.optim.AdamW
     )
 
+
+# %%
