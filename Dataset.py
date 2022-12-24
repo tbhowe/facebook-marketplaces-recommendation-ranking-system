@@ -47,7 +47,7 @@ class ImagesDataset(Dataset):
         image_df=pd.read_csv('images.csv',lineterminator='\n', index_col=0)
         self.image_df=image_df.merge(product_df, left_on ='product_id', right_on='id')
         self.image_df['cat_L1'] = [catter.split("/")[0] for catter in self.image_df['category']]
-        self.image_df=self.image_df.sample(frac=0.2) # THIS IS FOR DEBUG - makes dataset much smaller!
+        # self.image_df=self.image_df.sample(frac=0.2) # THIS IS FOR DEBUG - makes dataset much smaller!
     def get_X_y_from_img_idx(self, idx):
         cwd = os.getcwd()
         image_ID=self.image_df.iloc[idx]['id_x']
@@ -69,8 +69,8 @@ class ImagesDataset(Dataset):
         total_n=self.image_df.shape[0]
         return (value_counts/total_n)*100
 
-test_dataset=ImagesDataset(transform=None)
-test_dataset.get_value_frequencies()
+# test_dataset=ImagesDataset(transform=None)
+# test_dataset.get_value_frequencies()
 
 # test_dataset.image_df.head(10)
 # img_number=342
