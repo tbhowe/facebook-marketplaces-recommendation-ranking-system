@@ -54,8 +54,8 @@ class ImagesDataset(Dataset):
         image_fp = ( cwd + '/cleaned_images/' + image_ID + '.jpg')
         # print(img_fp)
         img = Image.open(image_fp)
-        # if self.transform:
-        #     img = self.transform(img)
+        if self.transform:
+            img = self.transform(img)
         category_idx = self.category_name_to_idx[self.image_df.iloc[idx]['cat_L1']]
         return img, category_idx
 

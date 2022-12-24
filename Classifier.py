@@ -78,7 +78,7 @@ class TransferLearning(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.Linear(256, 128),
             torch.nn.ReLU(),
-            torch.nn.Linear(128, 10),
+            torch.nn.Linear(128, 13),
         )
         self.layers.fc = linear_layers
         # print(self.layers)

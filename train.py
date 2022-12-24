@@ -1,5 +1,5 @@
 from Dataset import ImagesDataset
-from classifier import NeuralNetworkClassifier, CNN, TransferLearning
+from Classifier import NeuralNetworkClassifier, CNN, TransferLearning
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import torch
@@ -89,9 +89,10 @@ if __name__ == "__main__":
 
     size = 128
     transform = transforms.Compose([
-        transforms.PILToTensor(),
+        
         transforms.Resize(size),
         transforms.RandomCrop((size, size)),
+        transforms.ToTensor(),
         # transforms.Grayscale(),
         
         # transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1))
