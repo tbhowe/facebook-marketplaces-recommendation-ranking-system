@@ -89,14 +89,15 @@ if __name__ == "__main__":
 
     size = 128
     transform = transforms.Compose([
+        transforms.PILToTensor(),
         transforms.Resize(size),
         transforms.RandomCrop((size, size)),
         # transforms.Grayscale(),
-        transforms.ToTensor(),
+        
         # transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1))
     ])
 
-    dataset = CitiesDataset(transform=transform)
+    dataset = ImagesDataset(transform=transform)
     # dataset = MNIST(root='./mnist-data', download=True, transform=transform) # TESTING
     # features, labels = dataset[0]
     # features.show()

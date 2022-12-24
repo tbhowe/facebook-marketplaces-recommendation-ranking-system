@@ -1,37 +1,84 @@
-#%%
-
-
+from Dataset import ImagesDataset
+import torch
 from torchvision.models import resnet50
 
-import torch
+
+# class Module:
+#     def __call__(self):
+
+#         # other interesting stuff
+#         self.forward()
+
+#     def forward():
+#         raise NotImplementedError()
+
+class NeuralNetworkClassifier(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+
+        # initialise weights and biases (parameters)
+        self.layers = torch.nn.Sequential(
+            torch.nn.Flatten(),
+            torch.nn.Linear(4096, 512),
+            torch.nn.ReLU(),
+            torch.nn.Linear(512, 256),
+            torch.nn.ReLU(),
+            torch.nn.Linear(256, 10),
+            # torch.nn.Softmax()
+        )
+
+    def forward(self, features):
+        """Takes in features and makes a prediction"""
+        return self.layers(features)
 
 
-#%% initialise Dataset and data loader
+class CNN(torch.nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        # initialise weights and biases (parameters)
+        self.layers = torch.nn.Sequential(
+            torch.nn.Conv2d(1, 8, 7),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(8, 16, 7),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(16, 16, 7),
+            # torch.nn.ReLU(),
+            # torch.nn.Conv2d(16, 16, 7),
+            # torch.nn.ReLU(),
+            # torch.nn.Conv2d(16, 16, 7),
+            # torch.nn.ReLU(),
+            # torch.nn.Conv2d(16, 16, 7),
+            # torch.nn.ReLU(),
+            # torch.nn.Conv2d(16, 16, 7),
+            # torch.nn.ReLU(),
+            # torch.nn.Conv2d(16, 16, 7),
+            torch.nn.ReLU(),
+            torch.nn.Flatten(),
+            torch.nn.Linear(1600, 256),
+            torch.nn.ReLU(),
+            torch.nn.Linear(256, 64),
+            torch.nn.ReLU(),
+            torch.nn.Linear(64, 10),
+            # torch.nn.Softmax()
+        )
 
-# FacebookImagesDataset=ImagesDataset()
-# batch_size=32
-# train_loader=DataLoader(FacebookImagesDataset, batch_size=batch_size, shuffle=True)
+    def forward(self, features):
+        """Takes in features and makes a prediction"""
+        return self.layers(features)
 
-# example=next(iter(train_loader))
 
-# features,labels = example
-
-# print('oll yn kompoester yw. Splann!')
-
-class ResNet50(torch.nn.Module):
+class TransferLearning(torch.nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = resnet50()
         for param in self.layers.parameters():
             param.grad_required = False
-            # param.lr = 0.00006
         linear_layers = torch.nn.Sequential(
-            torch.nn.Linear(2048,13)
-            # torch.nn.Linear(2048, 512),
-            # torch.nn.ReLU(),
-            # torch.nn.Linear(512, 64),
-            # torch.nn.ReLU(),
-            # torch.nn.Linear(64, 13),
+            torch.nn.Linear(2048, 256),
+            torch.nn.ReLU(),
+            torch.nn.Linear(256, 128),
+            torch.nn.ReLU(),
+            torch.nn.Linear(128, 10),
         )
         self.layers.fc = linear_layers
         # print(self.layers)
@@ -39,36 +86,19 @@ class ResNet50(torch.nn.Module):
     def forward(self, x):
         return self.layers(x)
 
+# model = TransferLearning()
+# optimiser = torch.optim.Adam(model.feature_extractor.parameters(), lr=0.00001)
+# # do trainign
+# optimiser.load_state_dict['lr']
 
 
-class CNN(torch.nn.Module):
-    
-    def __init__(self) -> None:
-        super().__init__()
-        # initialise weights and biases (parameters)
-        self.layers = torch.nn.Sequential(
-            torch.nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(16, 16, 3),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(16, 16, 3),
-            torch.nn.ReLU(),
-            torch.nn.Conv2d(16, 16, 3),
-            # torch.nn.ReLU(),
-            torch.nn.Flatten(),
-            torch.nn.Linear(230400, 2000),
-            torch.nn.ReLU(),
-            torch.nn.Linear(2000, 256),
-            torch.nn.ReLU(),
-            torch.nn.Linear(256, 64),
-            torch.nn.ReLU(),
-            torch.nn.Linear(64, 13),
-            
-        )
-
-    def forward(self, features):
-        """Takes in features and makes a prediction"""
-        return self.layers(features)
-
-    
-# %%
+if __name__ == "__main__":
+    # citiesDataset = CitiesDataset()
+    # example = citiesDataset[0]
+    # print(example)
+    # features, label = example
+    # nn = NeuralNetworkClassifier()
+    model = TransferLearning()
+    prediction = model(features)
+    print('Prediction:', prediction)
+    print('Label:', label)
