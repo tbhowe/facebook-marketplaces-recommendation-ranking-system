@@ -39,14 +39,16 @@ def train(
 
     # initialise an optimiser
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
-    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[2,5,10], gamma=0.1,verbose=True)
+    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[5,20,50], gamma=0.1,verbose=True)
+    state_dict=torch.load( 'model_evaluation/TransferLearning2022-12-25-08:15:53/saved_weights/_latest_weights.pt' )
+    model.load_state_dict(state_dict)
     batch_idx = 0
     epoch_idx= 0
     for epoch in range(epochs):  # for each epoch
         # 
         
         print('Epoch:', epoch_idx,'LR:', scheduler.get_lr())
-        weights_filename=model.weights_folder_name + '_latest_weights.pt'
+        weights_filename=model.weights_folder_name + '_' + str(epoch) + '_latest_weights.pt'
         epoch_idx +=1
         torch.save(model.state_dict(), weights_filename)
         for batch in train_loader:  # for each batch in the dataloader
@@ -101,7 +103,7 @@ if __name__ == "__main__":
     size = 64
     transform = transforms.Compose([
         transforms.Resize(size),
-        transforms.RandomCrop((size, size), pad_if_needed=True),
+        transforms.RandomCrop((size,size), pad_if_needed=True),
         # transforms.Grayscale(),
         transforms.ToTensor(),
         #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
@@ -129,8 +131,8 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=100,
-        lr=0.001,
+        epochs=20,
+        lr=0.0001,
         optimiser=torch.optim.AdamW
         
     )
