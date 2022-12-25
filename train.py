@@ -1,6 +1,5 @@
-#%%
-from Dataset import ImagesDataset
-from Classifier import TransferLearning
+from dataset import CitiesDataset
+from classifier import NeuralNetworkClassifier, CNN, TransferLearning
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import torch
@@ -8,9 +7,8 @@ from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 from torch.utils.data import random_split
 from torchvision import transforms
+from torch.optim import lr_scheduler
 
-#TODO - save model score at end of each epoch
-#TODO - with optional flag: load most recent state dict on init
 def train(
     model,
     train_loader,
@@ -31,14 +29,24 @@ def train(
     - model: a trained pytorch model
     """
 
+    # components of a ml algortithms
+    # 1. data
+    # 2. model
+    # 3. criterion (loss function)
+    # 4. optimiser
+
     writer = SummaryWriter()
 
     # initialise an optimiser
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
+    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[20,60], gamma=0.1,verbose=True)
     batch_idx = 0
     epoch_idx= 0
     for epoch in range(epochs):  # for each epoch
-        weights_filename=model.weights_folder_name + 'epoch_' + str(epoch_idx) +'_weights.pt'
+        # 
+        
+        print('Epoch:', epoch_idx,'LR:', scheduler.get_lr())
+        weights_filename=model.weights_folder_name + '_latest_weights.pt'
         epoch_idx +=1
         torch.save(model.state_dict(), weights_filename)
         for batch in train_loader:  # for each batch in the dataloader
@@ -53,21 +61,23 @@ def train(
             optimiser.zero_grad()  # zero grad
             writer.add_scalar("Loss/Train", loss.item(), batch_idx)
             batch_idx += 1
-            if batch_idx % 100 == 0:
-                print('Evaluating on validation set')
+            if batch_idx % 25 == 0:
+                print('Evaluating on valiudation set')
                 # evaluate the validation set performance
                 val_loss, val_acc = evaluate(model, val_loader)
                 writer.add_scalar("Loss/Val", val_loss, batch_idx)
                 writer.add_scalar("Accuracy/Val", val_acc, batch_idx)
+
+        scheduler.step()
     # evaluate the final test set performance
+    
     print('Evaluating on test set')
     test_loss = evaluate(model, test_loader)
     # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
     
-    
     return model   # return trained model
-
+    
 
 def evaluate(model, dataloader):
     losses = []
@@ -90,17 +100,15 @@ if __name__ == "__main__":
 
     size = 128
     transform = transforms.Compose([
-        
         transforms.Resize(size),
-        transforms.RandomCrop((64, 64)),
-        # transforms.RandomEqualize(p=0.3),
-        transforms.ToTensor(),
+        transforms.RandomCrop((size, size), pad_if_needed=True),
         # transforms.Grayscale(),
-        
-        # transforms.Normalize((0.5, 0.5, 0.5), (1, 1, 1))
+        transforms.ToTensor(),
+        #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
 
-    dataset = ImagesDataset(transform=transform)
+
+    dataset = CitiesDataset(transform=transform)
     train_set_len = round(0.7*len(dataset))
     val_set_len = round(0.15*len(dataset))
     test_set_len = len(dataset) - val_set_len - train_set_len
@@ -108,13 +116,14 @@ if __name__ == "__main__":
     # split the data to get validation and test sets
     train_set, val_set, test_set = random_split(dataset, split_lengths)
 
-    batch_size = 16
+    batch_size = 32
     train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
     val_loader = DataLoader(val_set, batch_size=batch_size)
     test_loader = DataLoader(test_set, batch_size=batch_size)
     # nn = NeuralNetworkClassifier()
     # cnn = CNN()
     model = TransferLearning()
+    
     train(
         model,
         train_loader,
@@ -123,7 +132,5 @@ if __name__ == "__main__":
         epochs=100,
         lr=0.0001,
         optimiser=torch.optim.AdamW
+        
     )
-
-
-# %%
