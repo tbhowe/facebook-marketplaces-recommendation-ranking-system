@@ -1,4 +1,4 @@
-from dataset import CitiesDataset
+from Dataset import ImagesDataset
 import torch
 from torchvision.models import resnet50
 from torchvision.models import ResNet50_Weights
@@ -79,7 +79,7 @@ class TransferLearning(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.Linear(256, 128),
             torch.nn.ReLU(),
-            torch.nn.Linear(128, 10),
+            torch.nn.Linear(128, 13),
         )
         self.layers.fc = linear_layers
         self.initialise_weights_folders()

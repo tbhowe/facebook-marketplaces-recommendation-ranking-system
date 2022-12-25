@@ -1,5 +1,5 @@
-from dataset import CitiesDataset
-from classifier import NeuralNetworkClassifier, CNN, TransferLearning
+from Dataset import ImagesDataset
+from Classifier import TransferLearning
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 import torch
@@ -39,7 +39,7 @@ def train(
 
     # initialise an optimiser
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
-    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[20,60], gamma=0.1,verbose=True)
+    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[2,5,10], gamma=0.1,verbose=True)
     batch_idx = 0
     epoch_idx= 0
     for epoch in range(epochs):  # for each epoch
@@ -61,7 +61,7 @@ def train(
             optimiser.zero_grad()  # zero grad
             writer.add_scalar("Loss/Train", loss.item(), batch_idx)
             batch_idx += 1
-            if batch_idx % 25 == 0:
+            if batch_idx % 100 == 0:
                 print('Evaluating on valiudation set')
                 # evaluate the validation set performance
                 val_loss, val_acc = evaluate(model, val_loader)
@@ -98,7 +98,7 @@ def evaluate(model, dataloader):
 
 if __name__ == "__main__":
 
-    size = 128
+    size = 64
     transform = transforms.Compose([
         transforms.Resize(size),
         transforms.RandomCrop((size, size), pad_if_needed=True),
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     ])
 
 
-    dataset = CitiesDataset(transform=transform)
+    dataset = ImagesDataset(transform=transform)
     train_set_len = round(0.7*len(dataset))
     val_set_len = round(0.15*len(dataset))
     test_set_len = len(dataset) - val_set_len - train_set_len
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         val_loader,
         test_loader,
         epochs=100,
-        lr=0.0001,
+        lr=0.001,
         optimiser=torch.optim.AdamW
         
     )
