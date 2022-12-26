@@ -38,7 +38,7 @@ def train(
 
     # initialise optimiser, learning rate scheduler, iteration variables
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
-    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[5,20,50], gamma=0.1,verbose=True)
+    scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[1], gamma=0.1,verbose=True)
     state_dict=torch.load( 'model_evaluation/TransferLearning2022-12-25-10:09:16/saved_weights/_7_latest_weights.pt' )
     model.load_state_dict(state_dict)
     batch_idx = 0
@@ -72,7 +72,8 @@ def train(
     test_loss = evaluate(model, test_loader)
     # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
-    
+    final_model_filename='final_models/image_model.pt'
+    torch.save(model.state_dict(), final_model_filename)
     return model   # return trained model
 
 
@@ -134,8 +135,8 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=10,
-        lr=0.0001,
+        epochs=2,
+        lr=0.00001,
         optimiser=torch.optim.AdamW
         
     )
