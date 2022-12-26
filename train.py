@@ -39,7 +39,7 @@ def train(
     # initialise optimiser, learning rate scheduler, iteration variables
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
     scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[5,20,50], gamma=0.1,verbose=True)
-    state_dict=torch.load( 'model_evaluation/TransferLearning2022-12-25-08:15:53/saved_weights/_latest_weights.pt' )
+    state_dict=torch.load( 'model_evaluation/TransferLearning2022-12-25-10:09:16/saved_weights/_7_latest_weights.pt' )
     model.load_state_dict(state_dict)
     batch_idx = 0
     epoch_idx= 0
@@ -61,7 +61,6 @@ def train(
             writer.add_scalar("Loss/Train", loss.item(), batch_idx)
             batch_idx += 1
 
-            
         print('Evaluating on valiudation set')
         # evaluate the validation set performance
         val_loss, val_acc = evaluate(model, val_loader)
@@ -69,14 +68,13 @@ def train(
         writer.add_scalar("Accuracy/Val", val_acc, batch_idx)
         scheduler.step()
     
-    
     print('Evaluating on test set')
     test_loss = evaluate(model, test_loader)
     # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
     
     return model   # return trained model
-    
+
 
 def evaluate(model, dataloader):
     losses = []
@@ -95,12 +93,10 @@ def evaluate(model, dataloader):
     return avg_loss, accuracy
 
 def test_final_model(model,test_loader,path_to_final_state_dict):
-    optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
     state_dict=torch.load( path_to_final_state_dict )
     model.load_state_dict(state_dict)
     print('Evaluating on test set')
     test_loss = evaluate(model, test_loader)
-    # writer.add_scalar("Loss/Test", test_loss, batch_idx)
     model.test_loss = test_loss
     return test_loss
 
@@ -111,6 +107,8 @@ def split_dataset(dataset):
     split_lengths = [train_set_len, val_set_len, test_set_len]
     train_set, val_set, test_set = random_split(dataset, split_lengths)
     return train_set,val_set,test_set
+
+
 
 if __name__ == "__main__":
 
@@ -136,7 +134,7 @@ if __name__ == "__main__":
         train_loader,
         val_loader,
         test_loader,
-        epochs=20,
+        epochs=10,
         lr=0.0001,
         optimiser=torch.optim.AdamW
         
