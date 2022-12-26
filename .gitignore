@@ -3,3 +3,4 @@ cleaned_images/
 .DS_Store
 model_evaluation/
 images/
+good_saved_weights/
