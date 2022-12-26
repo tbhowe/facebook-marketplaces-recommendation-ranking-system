@@ -9,6 +9,7 @@ from torch.utils.data import random_split
 from torchvision import transforms
 from torch.optim import lr_scheduler
 
+
 def train(
     model,
     train_loader,
@@ -97,6 +98,23 @@ def evaluate(model, dataloader):
     print("Loss:", avg_loss, "Accuracy:", accuracy.detach().numpy())
     return avg_loss, accuracy
 
+def test_final_model(model,test_loader,path_to_final_state_dict):
+    optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
+    state_dict=torch.load( path_to_final_state_dict )
+    model.load_state_dict(state_dict)
+    print('Evaluating on test set')
+    test_loss = evaluate(model, test_loader)
+    # writer.add_scalar("Loss/Test", test_loss, batch_idx)
+    model.test_loss = test_loss
+    return test_loss
+
+def split_dataset(dataset):
+    train_set_len = round(0.7*len(dataset))
+    val_set_len = round(0.15*len(dataset))
+    test_set_len = len(dataset) - val_set_len - train_set_len
+    split_lengths = [train_set_len, val_set_len, test_set_len]
+    train_set, val_set, test_set = random_split(dataset, split_lengths)
+    return train_set,val_set,test_set
 
 if __name__ == "__main__":
 
@@ -104,20 +122,11 @@ if __name__ == "__main__":
     transform = transforms.Compose([
         transforms.Resize(size),
         transforms.RandomCrop((size,size), pad_if_needed=True),
-        # transforms.Grayscale(),
         transforms.ToTensor(),
-        #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])
 
-
     dataset = ImagesDataset(transform=transform)
-    train_set_len = round(0.7*len(dataset))
-    val_set_len = round(0.15*len(dataset))
-    test_set_len = len(dataset) - val_set_len - train_set_len
-    split_lengths = [train_set_len, val_set_len, test_set_len]
-    # split the data to get validation and test sets
-    train_set, val_set, test_set = random_split(dataset, split_lengths)
-
+    train_set,val_set,test_set=split_dataset(dataset)
     batch_size = 32
     train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
     val_loader = DataLoader(val_set, batch_size=batch_size)
