@@ -20,7 +20,12 @@ class TransferLearning(torch.nn.Module):
             # torch.nn.Linear(256, 128),
             # torch.nn.ReLU(),
             # torch.nn.Linear(128, 13),
+
             torch.nn.Linear(2048, 13)
+
+            # torch.nn.Linear(2048, 256),
+            # torch.nn.ReLU(),
+            # torch.nn.Linear(256, 13),
         )
         self.layers.fc = linear_layers
         self.initialise_weights_folders()
