@@ -2,6 +2,7 @@ from Dataset import ImagesDataset
 import torch
 from torchvision.models import resnet50
 from torchvision.models import ResNet50_Weights
+from torchvision import transforms
 import os
 import time
 
@@ -29,6 +30,12 @@ class TransferLearning(torch.nn.Module):
         )
         self.layers.fc = linear_layers
         self.initialise_weights_folders()
+        self.image_size=64
+        self.transform = transforms.Compose([
+            transforms.Resize(self.image_size),
+            transforms.RandomCrop((self.image_size), pad_if_needed=True),
+            transforms.ToTensor(),
+            ])
         
 
     def forward(self, x):
@@ -43,3 +50,9 @@ class TransferLearning(torch.nn.Module):
             os.makedirs('model_evaluation/' + folder_name + '/saved_weights/') 
         self.weights_folder_name='model_evaluation/' + folder_name + '/saved_weights/'
 
+   
+    def transform_image(self,img):
+        '''method to transform an input image to tensor and give correct dimensionality for input as prediction'''
+        img=self.transform(img).unsqueeze(0)
+        
+        
