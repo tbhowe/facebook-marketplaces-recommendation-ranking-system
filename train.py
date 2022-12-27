@@ -39,7 +39,7 @@ def train(
     # initialise optimiser, learning rate scheduler, iteration variables
     optimiser = optimiser(model.parameters(), lr=lr, weight_decay=0.001)
     scheduler = lr_scheduler.MultiStepLR(optimiser, milestones=[4,9], gamma=0.1,verbose=True)
-    state_dict=torch.load( 'model_evaluation/TransferLearning2022-12-25-08:15:53/saved_weights/_latest_weights.pt' )
+    state_dict=torch.load( 'good_saved_weights/weights_from_reduced_ds.pt' )
     model.load_state_dict(state_dict)
     batch_idx = 0
     epoch_idx= 0
@@ -115,14 +115,7 @@ def split_dataset(dataset):
 
 if __name__ == "__main__":
 
-    size = 64
-    transform = transforms.Compose([
-        transforms.Resize(size),
-        transforms.RandomCrop((size,size), pad_if_needed=True),
-        transforms.ToTensor(),
-    ])
-
-    dataset = ImagesDataset(transform=transform)
+    dataset = ImagesDataset()
     train_set,val_set,test_set=split_dataset(dataset)
     batch_size = 32
     train_loader = DataLoader(train_set, shuffle=True, batch_size=batch_size)
