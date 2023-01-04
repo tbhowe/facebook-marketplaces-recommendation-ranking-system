@@ -2,7 +2,7 @@
 from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
-
+import pickle
 import pandas as pd
 import os
 
@@ -74,7 +74,15 @@ class ImagesDataset(Dataset):
         total_n=self.image_df.shape[0]
         return (value_counts/total_n)*100
 
+if __name__ == "__main__":
+    dataset=ImagesDataset(transform=None)
+    idx_to_cat=dataset.idx_to_category_name
+    with open('idx_to_cat.pickle', 'wb') as handle:
+        pickle.dump(idx_to_cat, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+    cat_to_idx=dataset.category_name_to_idx
+    with open('cat_to_idx.pickle', 'wb') as handle:
+        pickle.dump(cat_to_idx, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 
