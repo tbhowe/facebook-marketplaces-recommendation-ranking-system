@@ -1,6 +1,5 @@
 #%%
 from Classifier import TransferLearning
-from Dataset import ImagesDataset
 import torch
 from PIL import Image
 from torchvision import transforms
@@ -31,13 +30,13 @@ class ImageProcessor:
 
 
 
-image_fp = ('cleaned_images/0c2f81f8-7d98-42e2-9d7d-836335fa08df.jpg')
+# image_fp = ('cleaned_images/0c2f81f8-7d98-42e2-9d7d-836335fa08df.jpg')
 
-with open('idx_to_cat.pickle', 'rb') as handle:
-    idx_to_cat=pickle.load(handle)
+# with open('idx_to_cat.pickle', 'rb') as handle:
+#     idx_to_cat=pickle.load(handle)
 
-processor=ImageProcessor(idx_to_cat = idx_to_cat)
-processor.get_prediction(image_fp)
+# processor=ImageProcessor(idx_to_cat = idx_to_cat)
+# processor.get_prediction(image_fp)
 
 
 
