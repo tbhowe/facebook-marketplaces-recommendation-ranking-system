@@ -1,0 +1,12 @@
+boto3 == 1.24.9
+transformers
+python-multipart
+fastapi==0.88.0
+numpy==1.23.3
+pandas==1.5.1
+Pillow==9.4.0
+pydantic==1.10.4
+requests==2.28.1
+torch==1.13.0
+torchvision==0.14.0
+uvicorn==0.20.0
