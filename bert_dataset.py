@@ -38,13 +38,11 @@ class TextDataset():
         self.text_df=text_df.merge(product_df, left_on ='product_id', right_on='id')
         self.text_df['cat_L1'] = [catter.split("/")[0] for catter in self.text_df['category']]
         self.text_df=pd.DataFrame().assign(features=self.text_df['product_description'], labels=self.text_df['cat_L1'])
-        # self.text_df=self.text_df[['product_description', 'cat_L1']]
-        # self.image_df=self.image_df.sample(frac=0.1) # THIS IS FOR DEBUG - makes dataset much smaller!
+        
     
-
-text_dataset=TextDataset()
-
-# text_dataset.text_df.head(5)
-text_dataset.dataset
+if __name__ == "__main__":
+    text_dataset=TextDataset()
+    # text_dataset.text_df.head(5)
+    text_dataset.dataset
 
 # %%
