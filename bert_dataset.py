@@ -16,6 +16,10 @@ class TextDataset():
         self.load_dataframe()
         self.categories=self.text_df['labels'].unique()
         self.dataset=Dataset.from_pandas(self.text_df, preserve_index=False)
+        self.dataset=self.dataset.train_test_split(test_size=0.3)
+        self.splitter=self.dataset['test'].train_test_split(test_size=0.5)
+        self.dataset['test']=self.splitter['test']
+        self.dataset['validation']=self.splitter['train']
         # self.transform=transform
 
         # create dict of cat_name to IDX
@@ -43,6 +47,6 @@ class TextDataset():
 if __name__ == "__main__":
     text_dataset=TextDataset()
     # text_dataset.text_df.head(5)
-    text_dataset.dataset
+    print(text_dataset.dataset)
 
 # %%
