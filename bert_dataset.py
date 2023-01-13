@@ -17,7 +17,7 @@ class TextDataset(Dataset):
         self.categories=self.text_df['labels'].unique()
         self.encoder = {y: x for (x, y) in enumerate(set(self.categories))}
         self.decoder = {x: y for (x, y) in enumerate(set(self.categories))}
-        
+        self.max_length = 50
 
     def load_dataframe(self):
         '''loads the products csv from the Facebook Marketplace porject into a pandas Dataframe.
@@ -34,7 +34,7 @@ class TextDataset(Dataset):
         label = self.encoder[label]
         label = torch.as_tensor(label)
         description =self.text_df['description'][index]
-        features=self.tokenizer([description], padding='max_length', truncation=True)
+        features=self.tokenizer([description], max_length=self.max_length, padding='max_length', truncation=True)
         features = {key:torch.LongTensor(value) for key, value in features.items()}
 
         return features, label
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     
     model=BertModel.from_pretrained('bert-base-uncased', output_hidden_states = True)
     model.eval()
-    test_out=model(**test_features).last_hidden_state.swapaxes(1,2)
-    print(test_out)
-    print(len(text_dataset))
+    test_out=model(**test_features).last_hidden_state
+    print(test_out.logits.size())
+    # print(len(text_dataset))
 # %%
