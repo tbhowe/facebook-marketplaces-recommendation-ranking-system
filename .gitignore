@@ -4,3 +4,8 @@ cleaned_images/
 model_evaluation/
 images/
 good_saved_weights/
+__pychace__/
+commoon_commands.txt
+datetimetest.py
+images_fb.zip
+platcheck.py
