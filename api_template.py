@@ -46,7 +46,7 @@ try:
 # image_decoder.pkl                                          #
 ##############################################################
     image_model=ImageClassifier()
-    state_dict=torch.load('final_models/image_model.pt ')
+    state_dict=torch.load('api/final_models/image_model.pt')
     image_model.load_state_dict(state_dict=state_dict)
     pass
 except:
