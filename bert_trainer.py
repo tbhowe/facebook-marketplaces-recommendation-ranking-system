@@ -1,31 +1,28 @@
 #%%
 from bert_dataset import TextDataset
-import torch
 from transformers import BertModel
+from torch import nn
 
-class BERT_classifier(torch.nn.Module):
 
-    def __init__(self):
+class BERT_Classifier(nn.Module):
+    def __init__(self,
+                 input_size: int = 768,
+                 num_classes: int = 13):
         super().__init__()
-        self.layers = BertModel.from_pretrained('bert-base-uncased', output_hidden_states = True)
-        for param in self.layers.parameters():
-            param.grad_required = False     
-
-        # for param in self.layers.layer4.parameters():  
-        #     param.grad_required = True
-        #     param.lr=0.000001
-        linear_layers = torch.nn.Sequential(
-            torch.nn.Linear(38400, 256),
-            torch.nn.ReLU(),
-            torch.nn.Linear(256, 13)
-        )
-        self.layers.fc = linear_layers
-        # print(self.layers)
-
-    def forward(self, x):
-        return self.layers(x)
+        self.layers = nn.Sequential(nn.Conv1d(input_size, 256, kernel_size=3, stride=1, padding=1),
+                                  nn.ReLU(),
+                                  nn.MaxPool1d(kernel_size=2, stride=2),
+                                  nn.Conv1d(256, 32, kernel_size=3, stride=1, padding=1),
+                                  nn.ReLU(),
+                                  nn.Flatten(),
+                                  nn.Linear(384 , 128),
+                                  nn.ReLU(),
+                                  nn.Linear(128, num_classes))
+    def forward(self, input):
+        x = self.layers(input)
+        return x
 
 if __name__ == "__main__":
-    test_classifier=BERT_classifier()
+    test_classifier=BERT_Classifier()
 
 # %%
