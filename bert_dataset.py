@@ -58,6 +58,6 @@ if __name__ == "__main__":
     model=BertModel.from_pretrained('bert-base-uncased', output_hidden_states = True)
     model.eval()
     test_out=model(**test_features).last_hidden_state
-    print(test_out.logits.size())
+    print(test_out.size())
     # print(len(text_dataset))
 # %%
